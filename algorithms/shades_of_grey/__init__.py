@@ -1,0 +1,1 @@
+from .algorithm import shades_of_grey

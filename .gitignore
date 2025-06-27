@@ -1,0 +1,15 @@
+*.ipynb
+__pycache__
+*.jpg
+*.png
+*.dng
+*.pt
+*.json
+*.pth
+*.tar
+*.xlsx
+wandb
+checkpoints
+lightning_logs
+*.pdf
+awb_output
