@@ -65,7 +65,7 @@ def parse_func():
     parse.add_argument(
         "--ckpt",
         type=str,
-        default="./best.ckpt",
+        default="./checkpoints/best.ckpt",
         help="path to checkpoint",
     )
 
