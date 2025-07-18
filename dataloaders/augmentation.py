@@ -146,7 +146,9 @@ class ToTensor(object):
 
 class RandomCrop(object):
 
-    def __init__(self, size: Union[int | float], ratio=0.5, apply_on=["input"]):
+    def __init__(
+        self, size: Union[int | float | tuple | list], ratio=0.5, apply_on=["input"]
+    ):
         self.crop_size = size
         self.ratio = ratio
         self.apply_on = set(apply_on)
@@ -158,13 +160,22 @@ class RandomCrop(object):
             for k in self.apply_on:
                 data = datas[k]
                 ori_h, ori_w = data.shape[-2:]
-                if self.crop_size < 1:
-                    crop_size = (
-                        int(self.crop_size * ori_h),
-                        int(self.crop_size * ori_w),
-                    )
+                if isinstance(self.crop_size, (int, float)):
+                    if self.crop_size < 1:
+                        crop_size = (
+                            int(self.crop_size * ori_h),
+                            int(self.crop_size * ori_w),
+                        )
+                    else:
+                        crop_size = (self.crop_size, self.crop_size)
                 else:
-                    crop_size = (self.crop_size, self.crop_size)
+                    crop_h, crop_w = self.crop_size
+                    if crop_h < 1:
+                        crop_h = int(crop_h * ori_h)
+                        crop_w = int(crop_w * ori_w)
+                    else:
+                        crop_h, crop_w = int(crop_h), int(crop_w)
+                    crop_size = (crop_h, crop_w)
                 if ori_h < crop_size[0] or ori_w < crop_size[1]:
                     return datas
                 i, j, h, w = transforms.RandomCrop.get_params(
