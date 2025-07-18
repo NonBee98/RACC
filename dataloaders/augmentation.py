@@ -165,7 +165,7 @@ class RandomCrop(object):
                     )
                 else:
                     crop_size = (self.crop_size, self.crop_size)
-                if ori_h < self.crop_size or ori_w < self.crop_size:
+                if ori_h < crop_size or ori_w < crop_size:
                     return datas
                 i, j, h, w = transforms.RandomCrop.get_params(
                     data, output_size=crop_size
