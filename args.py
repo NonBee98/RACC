@@ -30,14 +30,14 @@ def parse_func():
     parse.add_argument(
         "--data_dir",
         type=str,
-        default=r"E:\datasets\polyu_awb\magic_6\honor_normal_scenes, E:\datasets\polyu_awb\magic_6\honor_pure_color_scenes, E:\datasets\polyu_awb\magic_6\honor_night_scenes",
+        default=r"",
         help="directory storing the training data",
     )
 
     parse.add_argument(
         "--val_dir",
         type=str,
-        default=r"E:\datasets\polyu_awb\magic_6\honor_normal_scenes, E:\datasets\polyu_awb\magic_6\honor_pure_color_scenes, E:\datasets\polyu_awb\magic_6\honor_night_scenes",
+        default=r"",
         help="directory storing the validation data",
     )
 
