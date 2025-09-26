@@ -251,11 +251,11 @@ def main(method, args, thread_num=4, write_img=True, **kwargs):
             output_folder = "{}#{}".format(method, args.tag)
         else:
             output_folder = method
-    data_path = args.test_dir
-    dataset_name = args.test_dataset_name
+    data_path = args.val_dir
+    dataset_name = args.val_dataset_name
     dataset = GeneralDataset(
         data_path,
-        mode="val",
+        mode="test",
         img_size=(args.input_size, args.input_size),
         cross_validation=args.cross_validation,
         fold_num=args.fold_num,
@@ -298,38 +298,38 @@ def main(method, args, thread_num=4, write_img=True, **kwargs):
 if __name__ == "__main__":
     args = parse_func()
     if args.cross_validation:
-        data_path = args.test_dir
-        dataset_name = args.test_dataset_name
+        data_path = args.val_dir
+        dataset_name = args.val_dataset_name
 
-        # results = []
-        # for fold_index in range(args.fold_num):
-        #     args.fold_index = fold_index
-        #     args = format_args(args)
-        #     result = main(args.model_basename, args, 4, write_img=False)
-        #     results.append(result)
-        # wirte_cross_validation_results(
-        #     os.path.join(output_root, dataset_name), args.model_basename, results
-        # )
+            # results = []
+            # for fold_index in range(args.fold_num):
+            #     args.fold_index = fold_index
+            #     args = format_args(args)
+            #     result = main(args.model_basename, args, 4, write_img=False)
+            #     results.append(result)
+            # wirte_cross_validation_results(
+            #     os.path.join(output_root, dataset_name), args.model_basename, results
+            # )
 
-        # for method in traditional_methods.keys():
-        #     results = []
-        #     for fold_index in range(args.fold_num):
-        #         args.fold_index = fold_index
-        #         args = format_args(args)
-        #         result = main(method, args, 4, write_img=False)
-        #         results.append(result)
-        #     wirte_cross_validation_results(
-        #         os.path.join(output_root, dataset_name), method, results)
+        for method in traditional_methods.keys():
+            results = []
+            for fold_index in range(args.fold_num):
+                args.fold_index = fold_index
+                args = format_args(args)
+                result = main(method, args, 4, write_img=False)
+                results.append(result)
+            wirte_cross_validation_results(
+                os.path.join(output_root, dataset_name), method, results)
 
         for method in learning_based_methods.keys():
             args.model_name = method
             args.model_basename = method
             args = format_args(args)
             results = []
-            for fold_index in range(1):
+            for fold_index in range(args.fold_num):
                 args.fold_index = fold_index
                 args = format_args(args)
-                result = main(method, args, 4, write_img=True)
+                result = main(method, args, 4, write_img=False)
                 results.append(result)
             wirte_cross_validation_results(
                 os.path.join(output_root, dataset_name), method, results)

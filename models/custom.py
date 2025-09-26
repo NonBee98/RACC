@@ -217,7 +217,8 @@ class AUCC(nn.Module):
 
         compressed_color_feature = self.color_feature_encoder(color_feature)
         compressed_als_data = self.als_encoder(als_data)
-        compressed_feature = compressed_color_feature + compressed_als_data
+        # compressed_feature = compressed_color_feature + compressed_als_data
+        compressed_feature = compressed_color_feature
         out = self.head(compressed_feature)
         output = self.convert_rb_to_rgb(out)
         return output
@@ -340,7 +341,7 @@ class RACC(nn.Module):
             if isinstance(module, RepConv):
                 module.fuse_params()
         return self
-    
+
     def deploy(self):
         self.fuse_params()
         try:

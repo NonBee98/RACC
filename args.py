@@ -28,11 +28,17 @@ def parse_func():
     )
 
     parse.add_argument(
-        "--data_dir", type=str, default=r"", help="directory storing the training data"
+        "--data_dir",
+        type=str,
+        default=r"E:\datasets\polyu_awb\magic_6\honor_normal_scenes, E:\datasets\polyu_awb\magic_6\honor_pure_color_scenes, E:\datasets\polyu_awb\magic_6\honor_night_scenes",
+        help="directory storing the training data",
     )
 
     parse.add_argument(
-        "--val_dir", type=str, default=r"", help="directory storing the validation data"
+        "--val_dir",
+        type=str,
+        default=r"E:\datasets\polyu_awb\magic_6\honor_normal_scenes, E:\datasets\polyu_awb\magic_6\honor_pure_color_scenes, E:\datasets\polyu_awb\magic_6\honor_night_scenes",
+        help="directory storing the validation data",
     )
 
     parse.add_argument(
@@ -51,7 +57,7 @@ def parse_func():
     parse.add_argument(
         "--cross_validation",
         type=int,
-        default=0,
+        default=1,
         help="whether to use cross validation, when it is true, \
               fold_num models will be trained and evaluated independently",
     )
@@ -65,7 +71,7 @@ def parse_func():
     parse.add_argument(
         "--ckpt",
         type=str,
-        default="./checkpoints/best.ckpt",
+        default=None,
         help="path to checkpoint",
     )
 
@@ -134,27 +140,24 @@ def parse_func():
     batch_ratio = opt.batch_size / 32
     opt.model_basename = opt.model_name
     opt.lr = opt.lr * batch_ratio
+    opt.ori_data_dir = opt.data_dir
+    opt.ori_val_dir = opt.val_dir
 
     opt = format_args(opt)
     return opt
 
 
 def format_args(opt):
-    opt.data_dir = opt.data_dir.split(",")
+    opt.data_dir = opt.ori_data_dir.split(",")
     opt.data_dir = [x.strip() for x in opt.data_dir]
     opt.dataset_name = list(map(os.path.basename, opt.data_dir))
     opt.dataset_name = "#".join(opt.dataset_name)
 
-    opt.val_dir = opt.val_dir.split(",")
+    opt.val_dir = opt.ori_val_dir.split(",")
     opt.val_dir = [x.strip() for x in opt.val_dir]
     opt.val_dataset_name = list(map(os.path.basename, opt.val_dir))
     opt.val_dataset_name = "#".join(opt.val_dataset_name)
-    opt.dataset_name = "{}&{}".format(opt.dataset_name, opt.val_dataset_name)
-
-    opt.test_dir = opt.test_dir.split(",")
-    opt.test_dir = [x.strip() for x in opt.test_dir]
-    opt.test_dataset_name = list(map(os.path.basename, opt.test_dir))
-    opt.test_dataset_name = "#".join(opt.test_dataset_name)
+    opt.dataset_name = "{}".format(opt.dataset_name)
 
     if opt.cross_validation != 0:
         assert opt.fold_num > 1, "fold_num should be greater than 1"

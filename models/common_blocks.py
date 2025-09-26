@@ -152,7 +152,7 @@ class Conv(nn.Module):
             act_type='lrelu',  # activation
             depthwise=False,
             groups=1,
-            bias=False,
+            bias=True,
             dropout=0.,
             norm="bn"):
         super(Conv, self).__init__()

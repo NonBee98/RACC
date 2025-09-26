@@ -253,23 +253,33 @@ def main(args):
 if __name__ == "__main__":
     args = parse_func()
     datasets = [
+        r"E:\datasets\polyu_awb\magic_6\honor_night_scenes",
         r"E:\datasets\polyu_awb\magic_6\honor_normal_scenes",
         r"E:\datasets\polyu_awb\magic_6\honor_pure_color_scenes",
     ]
-    model_names = ["aucca", "img", "als", "aucc"]
-    for dataset in datasets:
-        args.ori_data_dir = dataset
-        args.ori_val_dir = dataset
-        args.ori_test_dir = dataset
-        for model_name in model_names:
-            args.model_name = model_name
-            args.model_basename = model_name
-            args = format_args(args)
-            if args.cross_validation:
+    if args.cross_validation:
+        model_names = ["racc", "img", "als"]
+        for dataset in datasets:
+            args.ori_data_dir = dataset
+            args.ori_val_dir = dataset
+            for model_name in model_names:
+                args.model_name = model_name
+                args.model_basename = model_name
+                args = format_args(args)
                 for i in range(args.fold_num):
                     args.fold_index = i
                     args = format_args(args)
                     print("Fold index: {}".format(i))
                     main(args)
+    # for model_name in model_names:
+    #     args.model_name = model_name
+    #     args.model_basename = model_name
+    #     args = format_args(args)
+    #     if args.cross_validation:
+    #         for i in range(args.fold_num):
+    #             args.fold_index = i
+    #             args = format_args(args)
+    #             print("Fold index: {}".format(i))
+    #             main(args)
     else:
         main(args)

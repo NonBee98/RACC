@@ -24,6 +24,7 @@ class TorchDataset(torch.utils.data.Dataset):
                  fold_index=0,
                  random_seed=0,
                  shuffle=False,
+                 test_ratio=0.2,
                  **kwargs):
 
         assert mode in ['train', 'val', 'test',
@@ -35,8 +36,8 @@ class TorchDataset(torch.utils.data.Dataset):
         self.mode = mode
         self.data_list = []
         self.gt_list = []
+        self.test_ratio = test_ratio
         file_list = []
-        self.all_wps = []
         for dir in root_dir:
             data_list_file = os.path.join(dir, 'data_list.json')
             with open(data_list_file, 'r') as f:
@@ -64,9 +65,6 @@ class TorchDataset(torch.utils.data.Dataset):
                 if os.path.exists(raw_file) and os.path.exists(gt_file):
                     self.data_list.append(raw_file)
                     self.gt_list.append(gt_file)
-                    with open(gt_file, 'r') as f:
-                        data = json.load(f)
-                        self.all_wps.append(data['white_point'])
                 else:
                     print("can't find file: {}, {}".format(raw_file, gt_file))
 
@@ -121,6 +119,12 @@ class TorchDataset(torch.utils.data.Dataset):
         random.seed(seed + worker_id)
 
     def split_fold(self, data_list, fold_num, fold_index):
+        test_num = int(len(data_list) * self.test_ratio)
+        test_list = data_list[:test_num]
+        data_list = data_list[test_num:]
+        if self.mode == 'test':
+            return test_list
+
         folds = []
         fold_size = len(data_list) // fold_num
         for i in range(fold_num):
@@ -129,7 +133,7 @@ class TorchDataset(torch.utils.data.Dataset):
             if i == fold_num - 1:
                 end_index = len(data_list)
             folds.append(data_list[start_index:end_index])
-        if self.mode != 'train':
+        if self.mode == 'val':
             return folds[fold_index]
 
         remain_index = [i for i in range(fold_num) if i != fold_index]

@@ -39,18 +39,22 @@ def _get_keys(data_dict: dict, keys: list):
 
 class GeneralDataset:
 
-    def __init__(self,
-                 root_dir,
-                 extension='png',
-                 mode='all',
-                 img_size=(-1, -1),
-                 cross_validation=False,
-                 fold_num=3,
-                 fold_index=0,
-                 random_seed=0,
-                 shuffle=False):
+    def __init__(
+        self,
+        root_dir,
+        extension="png",
+        mode="all",
+        img_size=(-1, -1),
+        cross_validation=False,
+        fold_num=3,
+        fold_index=0,
+        random_seed=0,
+        test_ratio=0.2,
+        shuffle=False,
+    ):
         self.img_size = img_size
         self.mode = mode
+        self.test_ratio = test_ratio
 
         assert mode in ['train', 'val', 'test',
                         'all'], "Invalid mode: {}".format(mode)
@@ -153,6 +157,12 @@ class GeneralDataset:
         return ret
 
     def split_fold(self, data_list, fold_num, fold_index):
+        test_num = int(len(data_list) * self.test_ratio)
+        test_list = data_list[:test_num]
+        data_list = data_list[test_num:]
+        if self.mode == "test":
+            return test_list
+
         folds = []
         fold_size = len(data_list) // fold_num
         for i in range(fold_num):
@@ -161,7 +171,7 @@ class GeneralDataset:
             if i == fold_num - 1:
                 end_index = len(data_list)
             folds.append(data_list[start_index:end_index])
-        if self.mode != 'train':
+        if self.mode == "val":
             return folds[fold_index]
 
         remain_index = [i for i in range(fold_num) if i != fold_index]

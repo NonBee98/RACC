@@ -21,7 +21,7 @@ def load_model(args, model_name: str):
         model = partial(AUCC, als_channels=args.channels)
         dataloader = RACCDataset
         loss_function = angular_error_torch
-    elif model_name == "aucca":
+    elif model_name == "racc":
         model = partial(RACC, als_channels=args.channels)
         dataloader = RACCDataset
         loss_function = racc_loss

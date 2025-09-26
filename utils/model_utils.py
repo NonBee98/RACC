@@ -9,5 +9,5 @@ def load_ckpt(model, ckpt_path):
         k:str = k.replace('module.', '', 1)
         k = k.replace('model.', '', 1)
         cleaned_parms[k] = v
-    model.load_state_dict(cleaned_parms, strict=True)
+    model.load_state_dict(cleaned_parms, strict=False)
     return model
